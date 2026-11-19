@@ -2,7 +2,18 @@
 
 {% block title %}Welcome | HF Markets{% endblock %}
 
+{% block header_action %}
+  <a class="button button--outline" href="{% url 'accounts:login' %}">Login</a>
+{% endblock %}
+
 {% block content %}
-  <h1>Thank you for signing up, {{ first_name }}!</h1>
-  <p>Your account has been created. <a href="{% url 'accounts:login' %}">Log in</a> to continue.</p>
+  <h1 class="page__title">Welcome</h1>
+
+  <section class="card card--narrow card--centered">
+    <h2 class="card__title">Thank you for signing up, {{ first_name }}!</h2>
+    <p class="card__text">Your account has been created. Log in to continue.</p>
+    <div class="form-actions">
+      <a class="button button--red button--submit" href="{% url 'accounts:login' %}">Login</a>
+    </div>
+  </section>
 {% endblock %}

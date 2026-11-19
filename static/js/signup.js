@@ -37,6 +37,7 @@
   }
 
   function validateCode(input) {
+    if (!countrySelect.value) return [];
     const code = input.value.trim();
     if (!code) return [messages.required];
     if (!CODE_PATTERN.test(code)) return [messages.codeNotNumeric];
@@ -110,7 +111,7 @@
       list = document.createElement("ul");
       list.id = errorId;
       list.className = "errorlist";
-      input.insertAdjacentElement("beforebegin", list);
+      input.closest(".field").append(list);    
     }
     list.replaceChildren(
       ...errors.map((message) => {

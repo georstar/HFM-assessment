@@ -5,12 +5,17 @@ from django.utils import timezone
 from django.contrib.auth import authenticate
 
 from . import error_messages
-from .countries import COUNTRIES
+from .countries import COUNTRIES, COUNTRY_CHOICES
 from .models import User
 
 
 class SignupForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput, strip=False)
+    password = forms.CharField(
+        strip=False,
+        widget=forms.PasswordInput(
+            attrs={"placeholder": "Password", "autocomplete": "new-password"}
+        ),
+    )
     accept_terms = forms.BooleanField(
         error_messages={"required": error_messages.TERMS_REQUIRED},
     )
@@ -21,6 +26,23 @@ class SignupForm(forms.ModelForm):
             "first_name", "last_name", "country",
             "phone_country_code", "phone_number", "email",
         ]
+        widgets = {
+            "first_name": forms.TextInput(
+                attrs={"placeholder": "First Name", "autocomplete": "given-name"}
+            ),
+            "last_name": forms.TextInput(
+                attrs={"placeholder": "Last Name", "autocomplete": "family-name"}
+            ),
+            "phone_country_code": forms.TextInput(
+                attrs={"placeholder": "Code", "inputmode": "numeric"}
+            ),
+            "phone_number": forms.TextInput(
+                attrs={"placeholder": "Phone", "inputmode": "numeric", "autocomplete": "tel-national"}
+            ),
+            "email": forms.EmailInput(
+                attrs={"placeholder": "Email", "autocomplete": "email"}
+            ),
+        }
         error_messages = {
             "email": {"invalid": error_messages.EMAIL_INVALID},
         }
@@ -71,13 +93,21 @@ class SignupForm(forms.ModelForm):
             user.save()
         return user
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["country"].choices = [("", "Country"), *COUNTRY_CHOICES]
+
 
 class EmailLoginForm(forms.Form):
     email = forms.EmailField(
         max_length=254,
         error_messages={"invalid": error_messages.EMAIL_INVALID},
+        widget=forms.EmailInput(attrs={"placeholder": "Email", "autocomplete": "email"})
     )
-    password = forms.CharField(widget=forms.PasswordInput, strip=False)
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={"placeholder": "Password", "autocomplete": "current-password"}),
+        strip=False,
+        )
 
     def __init__(self, *args, request=None, **kwargs):
         super().__init__(*args, **kwargs)

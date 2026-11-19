@@ -2,12 +2,28 @@
 
 {% block title %}Login | HF Markets{% endblock %}
 
+{% block header_action %}
+  <a class="button button--green" href="{% url 'accounts:signup' %}">Register</a>
+{% endblock %}
+
 {% block content %}
-  <h1>Login</h1>
-  <form method="post" novalidate>
-    {% csrf_token %}
-    {{ form.as_div }}
-    <button type="submit">Login</button>
-  </form>
-  <p>New here? <a href="{% url 'accounts:signup' %}">Register</a></p>
+  <h1 class="page__title">Login</h1>
+
+  <section class="card card--narrow">
+    <h2 class="card__title">Welcome back</h2>
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      <div class="form-stack">
+        {% include "accounts/_field.html" with field=form.email %}
+        {% include "accounts/_password_field.html" with field=form.password %}
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="button button--red button--submit">Login</button>
+      </div>
+    </form>
+  </section>
 {% endblock %}

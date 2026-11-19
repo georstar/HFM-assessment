@@ -3,14 +3,45 @@
 
 {% block title %}Register | HF Markets{% endblock %}
 
+{% block header_action %}
+  <a class="button button--outline" href="{% url 'accounts:login' %}">Login</a>
+{% endblock %}
+
 {% block content %}
-  <h1>Register</h1>
-  <form id="signup-form" method="post" novalidate>
-    {% csrf_token %}
-    {{ form.as_div }}
-    <button type="submit">Join now</button>
-  </form>
-  <p>Already have an account? <a href="{% url 'accounts:login' %}">Log in</a></p>
+  <h1 class="page__title">Register</h1>
+
+  <section class="card">
+    <h2 class="card__title">Open your trading account</h2>
+
+    <form id="signup-form" method="post" novalidate>
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      <div class="form-grid">
+        {% include "accounts/_field.html" with field=form.first_name %}
+        {% include "accounts/_field.html" with field=form.last_name %}
+        {% include "accounts/_field.html" with field=form.country %}
+        <div class="phone-row">
+          {% include "accounts/_field.html" with field=form.phone_country_code %}
+          {% include "accounts/_field.html" with field=form.phone_number %}
+        </div>
+        {% include "accounts/_field.html" with field=form.email %}
+        {% include "accounts/_password_field.html" with field=form.password %}
+      </div>
+
+      <div class="field terms">
+        <label for="{{ form.accept_terms.id_for_label }}">
+          {{ form.accept_terms }}
+          <span>I have read and accepted the <a href="#">Privacy Policy</a> and <a href="#">Terms and Conditions</a></span>
+        </label>
+        {{ form.accept_terms.errors }}
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="button button--green button--submit">Join now</button>
+      </div>
+    </form>
+  </section>
 {% endblock %}
 
 {% block scripts %}
