@@ -3,6 +3,7 @@ from django.test import Client, TestCase
 from django.urls import reverse
 
 from accounts import error_messages
+from accounts.countries import COUNTRIES
 from accounts.models import User
 from accounts.tests.test_forms import valid_data
 from accounts.forms import SignupForm
@@ -76,6 +77,11 @@ class SignupViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, error_messages.EMAIL_TAKEN)
         self.assertEqual(User.objects.count(), 1)
+
+    def test_page_includes_client_validation_config(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.context["signup_config"]["countries"], COUNTRIES)
+        self.assertContains(response, 'id="signup-config"')
 
 
 class LoginViewTests(TestCase):
